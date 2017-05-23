@@ -2,11 +2,11 @@ package nxp.cz.mycontacts;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputType;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -21,8 +21,8 @@ public class ContactsActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-        final ArrayAdapter<String> valuesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, loadNumbers());
-        setListAdapter(valuesAdapter);
+        final ContactsAdapter contactsAdapter = new ContactsAdapter(this, loadContacts());
+        setListAdapter(contactsAdapter);
         Button addButton = (Button) findViewById(R.id.button);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,26 +33,29 @@ public class ContactsActivity extends ListActivity {
     }
 
     private void openNewContactDialog() {
-        final EditText editTextNumber = new EditText(this);
-        editTextNumber.setInputType(InputType.TYPE_CLASS_PHONE);
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dialogContent = layoutInflater.inflate(R.layout.dialog_new_contact, null);
+        final EditText editTextNumber = (EditText) dialogContent.findViewById(R.id.editTextNumber);
+        final EditText editTextName = (EditText) dialogContent.findViewById(R.id.editTextName);
         new AlertDialog.Builder(this)
                 .setTitle("Add new contact")
-                .setView(editTextNumber)
+                .setView(dialogContent)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ((ArrayAdapter) ContactsActivity.this.getListAdapter()).add(editTextNumber.getText());
+                        Contact contact = new Contact(editTextName.getText().toString(), editTextNumber.getText().toString());
+                        ((ContactsAdapter) ContactsActivity.this.getListAdapter()).add(contact);
                     }
                 })
                 .create()
                 .show();
     }
 
-    private List<String> loadNumbers() {
+    private List<Contact> loadContacts() {
         int size = 5;
-        ArrayList<String> result = new ArrayList<>(size);
+        ArrayList<Contact> result = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            result.add(createRandomNumber());
+            result.add(new Contact("Contact " + (i + 1), createRandomNumber()));
         }
         return result;
     }
