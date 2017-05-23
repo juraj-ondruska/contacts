@@ -1,10 +1,14 @@
 package nxp.cz.mycontacts;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +27,25 @@ public class ContactsActivity extends ListActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                valuesAdapter.add(createRandomNumber());
+                openNewContactDialog();
             }
         });
+    }
+
+    private void openNewContactDialog() {
+        final EditText editTextNumber = new EditText(this);
+        editTextNumber.setInputType(InputType.TYPE_CLASS_PHONE);
+        new AlertDialog.Builder(this)
+                .setTitle("Add new contact")
+                .setView(editTextNumber)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ((ArrayAdapter) ContactsActivity.this.getListAdapter()).add(editTextNumber.getText());
+                    }
+                })
+                .create()
+                .show();
     }
 
     private List<String> loadNumbers() {
