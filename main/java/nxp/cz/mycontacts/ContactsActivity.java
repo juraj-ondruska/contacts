@@ -1,7 +1,6 @@
 package nxp.cz.mycontacts;
 
 import android.app.ListActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
@@ -20,7 +19,10 @@ public class ContactsActivity extends ListActivity {
         Random random = new Random();
         String[] result = new String[50];
         for (int i = 0; i < result.length; i++) {
-            result[i] = Long.toString(100000000 + random.nextInt(99999999));
+            result[i] =
+                    Long.toString(700 + random.nextInt(99)) + "-" +
+                    Long.toString(100 + random.nextInt(899)) + "-" +
+                    Long.toString(100 + random.nextInt(899));
         }
         return result;
     }
