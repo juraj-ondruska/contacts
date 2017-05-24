@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -32,7 +31,7 @@ public class ContactsActivity extends ListActivity {
         setContentView(R.layout.activity_contacts);
         final ContactsAdapter contactsAdapter = new ContactsAdapter(this, loadContacts());
         setListAdapter(contactsAdapter);
-        Button addButton = (Button) findViewById(R.id.button);
+        ImageButton addButton = (ImageButton) findViewById(R.id.imageButtonAdd);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
