@@ -1,23 +1,50 @@
 package nxp.cz.mycontacts;
 
+import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by Juraj Ondruska on 5/23/2017.
  */
 
-public class Contact implements Serializable {
+public class Contact implements Parcelable {
     private String name;
     private String number;
     private String address;
     private String email;
+    private Bitmap photo;
 
-    public Contact(String name, String number, String address, String email) {
+    public Contact(String name, String number, String address, String email, Bitmap photo) {
         this.name = name;
         this.number = number;
         this.address = address;
         this.email = email;
+        this.photo = photo;
+
     }
+
+    protected Contact(Parcel in) {
+        name = in.readString();
+        number = in.readString();
+        address = in.readString();
+        email = in.readString();
+        photo = in.readParcelable(Bitmap.class.getClassLoader());
+    }
+
+    public static final Creator<Contact> CREATOR = new Creator<Contact>() {
+        @Override
+        public Contact createFromParcel(Parcel in) {
+            return new Contact(in);
+        }
+
+        @Override
+        public Contact[] newArray(int size) {
+            return new Contact[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -49,5 +76,27 @@ public class Contact implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(number);
+        dest.writeString(address);
+        dest.writeString(email);
+        dest.writeParcelable(photo, 0);
     }
 }
