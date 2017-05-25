@@ -24,12 +24,19 @@ public class ContactsActivity extends ListActivity {
     private static final int REQUEST_CODE_CAMERA = 1;
     Random random = new Random();
     ImageButton imageButtonPhoto;
+    FileHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-        final ContactsAdapter contactsAdapter = new ContactsAdapter(this, loadContacts());
+
+        handler = new FileHandler();
+        handler.clean();
+        List<Contact> list = handler.getContactsFromFile();
+        if (list == null || list.isEmpty()) list = loadContacts();
+
+        final ContactsAdapter contactsAdapter = new ContactsAdapter(this, list);
         setListAdapter(contactsAdapter);
         ImageButton addButton = (ImageButton) findViewById(R.id.imageButtonAdd);
         addButton.setOnClickListener(new View.OnClickListener() {
@@ -70,6 +77,7 @@ public class ContactsActivity extends ListActivity {
                             photo = ((BitmapDrawable) photoDrawable).getBitmap();
                         }
                         Contact contact = new Contact(name, number, address, email, photo);
+                        handler.save(contact);
                         ((ContactsAdapter) ContactsActivity.this.getListAdapter()).add(contact);
                     }
                 })
@@ -80,8 +88,11 @@ public class ContactsActivity extends ListActivity {
     private List<Contact> loadContacts() {
         int size = 5;
         ArrayList<Contact> result = new ArrayList<>(size);
+        Contact contact = null;
         for (int i = 0; i < size; i++) {
-            result.add(new Contact("Contact " + (i + 1), createRandomNumber(), "", "", null));
+            contact = new Contact("Contact " + (i + 1), createRandomNumber(), "", "", null);
+            handler.save(contact);
+            result.add(contact);
         }
         return result;
     }

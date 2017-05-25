@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Created by Juraj Ondruska on 5/23/2017.
@@ -16,6 +16,7 @@ public class Contact implements Parcelable {
     private String address;
     private String email;
     private Bitmap photo;
+    private String id;
 
     public Contact(String name, String number, String address, String email, Bitmap photo) {
         this.name = name;
@@ -23,7 +24,7 @@ public class Contact implements Parcelable {
         this.address = address;
         this.email = email;
         this.photo = photo;
-
+        this.id = UUID.randomUUID().toString();
     }
 
     protected Contact(Parcel in) {
@@ -32,6 +33,7 @@ public class Contact implements Parcelable {
         address = in.readString();
         email = in.readString();
         photo = in.readParcelable(Bitmap.class.getClassLoader());
+        id = in.readString();
     }
 
     public static final Creator<Contact> CREATOR = new Creator<Contact>() {
@@ -86,6 +88,10 @@ public class Contact implements Parcelable {
         this.photo = photo;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -98,5 +104,12 @@ public class Contact implements Parcelable {
         dest.writeString(address);
         dest.writeString(email);
         dest.writeParcelable(photo, 0);
+        dest.writeString(id);
+    }
+
+    @Override
+    public String toString() {
+        String bmp = photo == null ? "null" : id + ".png";
+        return name + FileHandler.SEPARATOR + number + FileHandler.SEPARATOR + address + FileHandler.SEPARATOR + email + FileHandler.SEPARATOR + bmp;
     }
 }
